@@ -1,0 +1,27 @@
+<span> : 공 태그 어떠한 곳에 스타일 지정이나 아이디 등 지정 하고 싶을 때에 사용함 (문단) .
+<figure> : 이미지 , 도표 , 사진 , 차트 ,오디오 등을 담는 컨테이너
+alt : 그림이 없을 때에 설명
+
+
+css 선택자
+
+	클래스는 . -> 여러개사용가능
+	id는 # -> 고유성
+
+a:link 방문 전 링크 상태
+a:visited 방문 후 링크 상태
+a:hover 마우스 오버했을 떄 링크 상태
+a:active 클릭했을 때에 링크 상태
+
+text-indent -> 들여쓰기 효과
+
+
+기본적으로 한글
+	<input type="text" style="ime-mode:active;">
+
+기본적으로 영어	
+	<input type="text" style="ime-mode:inactive;">
+
+영문만 사용가능
+	<input type="text" style="ime-mode:disabled;">
+
