@@ -150,7 +150,6 @@
 			<%
 			try{
 				pageN = pageN * pageSize;
-
 			  	count = dao.getCount(lime);
 				if(count > 0){
 			  		resvList = dao.resvList(lime, pageN, pageSize);
