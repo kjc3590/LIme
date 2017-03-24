@@ -57,7 +57,7 @@
 									<a href="join_accept.jsp" class="nav-title">회원관리</a>
 								</div>
 								<div class="col-md-3">
-									<a href="index.jsp" class="nav-title">언어번역</a>
+									<a href="admin_translation.jsp" class="nav-title">언어번역</a>
 								</div>
 		<% 
 			}

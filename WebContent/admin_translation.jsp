@@ -23,6 +23,7 @@
 	rel="stylesheet">
 <script src="assets/js/jquery-3.1.1.min.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/custom.js"></script>
 <script>
 	function searchCheck(frm) {
 		//검색
@@ -34,6 +35,15 @@
 		frm.submit();
 	}
 </script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#input_ko").focus();
+	});
+</script>
+
+
+
 <%
 	request.setCharacterEncoding("UTF-8");
 
@@ -70,6 +80,7 @@
 		session.setAttribute("keyF", keyField);
 		keyF = (String) session.getAttribute("keyF");
 		lime.setKeyField(keyF);
+		System.out.println("keyF:"+keyF);
 
 	} else {
 		keyField = null;
@@ -82,6 +93,7 @@
 		session.setAttribute("keyW", keyWord);
 		keyW = (String) session.getAttribute("keyW");
 		lime.setKeyWord(keyW);
+		System.out.println("keyW:"+keyW);
 	} else {
 		keyWord = null;
 		lime.setKeyWord(keyW);
@@ -91,10 +103,12 @@
 		sort = request.getParameter("sort");
 		session.setAttribute("sort2", sort);
 		sort2 = (String) session.getAttribute("sort2");
-		lime.setSort(sort);
+		lime.setSort(sort2);
+		System.out.println("sort :" + sort2);
 	} else {
 		sort = null;
-		lime.setSort(sort);
+		lime.setSort(sort2);
+		System.out.println("sort :" + sort2);
 	}
 %>
 </head>
@@ -104,196 +118,241 @@
 			<div class="container" id="container">
 				<div class="card">
 					<%@ include file="/include/header.jsp"%>
+					<div class="card-card">
 
-					<div class="card-body">
-						<div class="nono col-md-4">
-							<form name="serach" method="post" class="form1">
-								<select class="choice" name="keyField">
-									<option value="">----선택----</option>
-									<option value="translation_korean">한국어</option>
-									<option value="translation_manager_korean">담당자(한국)</option>
-									<option value="translation_english">영어</option>
-									<option value="translation_manager_english">담당자(영국)</option>
-									<option value="translation_chinese">중국어</option>
-									<option value="translation_manager_chinese">담당자(중국)</option>
-								</select> <input type="text" name="keyWord" class="text" /> <input
-									class="btn-Lime btn" type="button" value="검색"
-									onclick="searchCheck(form)" class=" btn btn-primary m-r-10" />
-							</form>
+						<div class="card-body">
+							<div class="nono">
+								<div class="col-md-4">
+									<form name="serach" method="post" class="form1">
+										<select class="choice" name="keyField">
+											<option value="">----선택----</option>
+											<option value="translation_korean">한국어</option>
+											<option value="translation_manager_korean">담당자(한국)</option>
+											<option value="translation_english">영어</option>
+											<option value="translation_manager_english">담당자(영국)</option>
+											<option value="translation_chinese">중국어</option>
+											<option value="translation_manager_chinese">담당자(중국)</option>
+										</select> <input type="text" name="keyWord" class="text" /> <input
+											class="btn-Lime btn" type="button" value="검색"
+											onclick="searchCheck(form)" class=" btn btn-primary m-r-10" />
+									</form>
+								</div>
+								<div class="col-md-3 no-padding">
+									<form name="sort" method="post" class="form1">
+										<select class="choice" name="sort">
+											<option value="">----선택----</option>
+											<option value="translation_id">최신순</option>
+											<option value="translation_type">미번역</option>
+											<option value="translation_cday">번역완료</option>
+										</select> <input class="btn-Lime btn" type="submit" value="정렬">
+									</form>
+								</div>
+								<div class="hoho col-md-4 no-padding">
+									<form name="serach" action="./util/reset.jsp">
+										<input id="ten" type="hidden" value="adminT" name="what">
+										<input class="btn-Lime btn" type="submit" value="초기화">
+									</form>
+								</div>
+							</div>
+
+
+
+
+
+
 						</div>
 
+						<div class="col-md-12">
+							<div class="table-responsive">
 
-						<div class="popo col-md-4">
-							<form name="sort" method="post" class="form1">
-								<select class="choice" name="sort">
-									<option value="">----선택----</option>
-									<option value="translation_id">최신순</option>
-									<option value="translation_type">미번역</option>
-									<option value="translation_cday">번역완료</option>
-								</select> <input class="btn-Lime btn" type="submit" value="정렬">
-							</form>
-						</div>
+								<form class="form-horizontal" name="insert"
+									action="./util/insert_trans.jsp" method="post">
 
-						<div class="nono col-md-4">
-							<div class="totoyo">
-								<p class="young0">
-									<span class="btn-Lime btn"> <a href="write.html">글쓰기</a></span>
-								</p>
+									<div class="lazenca">
+										<div class="totoyo">
+											<p class="young0">
+												<input class="btn-Lime btn" type="submit" value="글쓰기">
+											</p>
+										</div>
+									</div>
+
+									<table id="data-table-selection"
+										class="td2 table table-condensed">
+										<thead>
+											<tr class="tr-color">
+												<th class="table-sort" style="text-align: center;">*</th>
+
+												<th class="table-sort">한국어</th>
+												<th class="table-sort">중국어</th>
+												<th class="table-sort">영어</th>
+												<th class="table-sort">등록시간</th>
+												<th class="table-sort">완료시간</th>
+											</tr>
+										</thead>
+
+
+
+										<tr class="tran">
+											<td class="rowrow" rowspan="2"
+												style="text-align: center; width: 8%;">추가입력</td>
+											<td><input name="trans_ko" class="form-control4"
+												type="text"  autofocus="autofocus"></td>
+											<td><input class="form-control4" type="text" readonly="readonly"></td>
+											<td><input class="form-control4" type="text" readonly="readonly"></td>
+											<td class="rowrow" rowspan="2"></td>
+											<td class="rowrow" rowspan="2"></td>
+										</tr>
+										<tr class="tran">
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+
+										<tbody>
+											<%
+												try {
+													pageN = pageN * pageSize;
+
+													count = dao.getCount_translation(lime);
+													if (count > 0) {
+														resvList = dao.translate(lime, pageN, pageSize);
+													}
+
+													for (Lime resv : resvList) {
+
+														String cday = resv.getTranslation_cday();
+
+														if (!cday.isEmpty()) {
+											%>
+
+
+
+
+											<tr class="tran ">
+												<td class="rowrow" rowspan="2" style="text-align: center;"><%=resv.getTranslation_id()%></td>
+												<td><%=resv.getTranslation_korean()%></td>
+												<td><input id="input_ch" class="form-control4" readonly="readonly"
+													type="text" autofocus="autofocus"
+													value="<%=resv.getTranslation_chinese()%>"></td>
+												<td><input id="input_eng" class="form-control4"
+													type="text" readonly="readonly" value="<%=resv.getTranslation_english()%>"></td>
+												<td class="rowrow" rowspan="2"><%=resv.getTranslation_day()%></td>
+												<td class="rowrow" rowspan="2"><%=resv.getTranslation_cday()%></td>
+											</tr>
+											<tr class="tran ">
+												<td><%=resv.getTranslation_manager_korean()%></td>
+												<td><%=resv.getTranslation_manager_english()%></td>
+												<td><%=resv.getTranslation_manager_chinese()%></td>
+											</tr>
+											<%
+												} else {
+											%>
+											<tr class="tran warning">
+												<td class="rowrow" rowspan="2" style="text-align: center;"><%=resv.getTranslation_id()%></td>
+												<td><%=resv.getTranslation_korean()%></td>
+												<td><input id="input_ch" class="form-control4" readonly="readonly"
+													type="text" autofocus="autofocus"
+													value="<%=resv.getTranslation_chinese()%>"></td>
+												<td><input id="input_eng" class="form-control4" readonly="readonly"
+													type="text" value="<%=resv.getTranslation_english()%>"></td>
+												<td class="rowrow" rowspan="2"><%=resv.getTranslation_day()%></td>
+												<td class="rowrow" rowspan="2"><%=resv.getTranslation_cday()%></td>
+											</tr>
+											<tr class="tran warning">
+												<td><%=resv.getTranslation_manager_korean()%></td>
+												<td><%=resv.getTranslation_manager_chinese()%></td>
+												<td><%=resv.getTranslation_manager_english()%></td>
+											</tr>
+											<%
+												}
+													}
+											%>
+										</tbody>
+									</table>
+
+								</form>
 							</div>
 						</div>
-
-					</div>
-
-					<div class="col-md-12">
-						<div class="table-responsive">
-							<table id="data-table-selection"
-								class="td2 table table-condensed">
-								<thead>
-									<tr class="tr-color">
-										<th class="table-sort" style="text-align: center;">*</th>
-
-										<th class="table-sort">한국어</th>
-										<th class="table-sort">중국어</th>
-										<th class="table-sort">영어</th>
-										<th class="table-sort">등록시간</th>
-										<th class="table-sort">완료시간</th>
-									</tr>
-								</thead>
-								<tbody>
-
-									<tr class="tran">
-										<td class="rowrow" rowspan="2"
-											style="text-align: center; width: 8%;">추가입력</td>
-										<td><input class="form-control4" type="text"></td>
-										<td><input class="form-control4" type="text"></td>
-										<td><input class="form-control4" type="text"></td>
-										<td class="rowrow" rowspan="2"></td>
-										<td class="rowrow" rowspan="2"></td>
-									</tr>
-									<tr class="tran">
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-								<tbody>
+						<div class="col-md-12">
+							<nav>
+								<div class="yoho">
 									<%
-										try {
-											pageN = pageN * pageSize;
-
-											count = dao.getCount_translation(lime);
-											if (count > 0) {
-												resvList = dao.translate(lime, pageN, pageSize);
-											}
-
-											for (Lime resv : resvList) {
-
-												String cday = resv.getTranslation_cday();
-
-												if (cday.isEmpty()) {
+										//한 화면에 몇 개의 페이지 번호가 보여지는지 지정
+											int pageBlock = 5;
+											//총 페이지 수
+											int pageCount = (count - 1) / pageSize + 1;
+											int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
+											int endPage = startPage + pageBlock - 1;
+											if (endPage > pageCount)
+												endPage = pageCount;
 									%>
+									<nav>
+										<ul class="pagination">
+											<%
+												if (startPage > pageBlock) {
+											%>
+											<li><a
+												href="admin_translation.jsp?pageNum=<%=startPage - 1%>"
+												aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+											</a></li>
+											<%
+												} else {
+											%>
+											<li class="disabled"><a href="#" aria-label="Previous">
+													<span aria-hidden="true">&laquo;</span>
+											</a></li>
+											<%
+												}
 
-
-									<%
-										
-									%>
-									<tr class="tran">
-										<td class="rowrow" rowspan="2" style="text-align: center;"><%=resv.getTranslation_id()%></td>
-										<td><%=resv.getTranslation_korean()%></td>
-										<td><%=resv.getTranslation_chinese()%></td>
-										<td><%=resv.getTranslation_english()%></td>
-										<td class="rowrow" rowspan="2"><%=resv.getTranslation_day()%></td>
-										<td class="rowrow" rowspan="2"><%=resv.getTranslation_cday()%></td>
-									</tr>
-									<tr class="tran">
-										<td><%=resv.getTranslation_manager_korean()%></td>
-										<td><%=resv.getTranslation_manager_english()%></td>
-										<td><%=resv.getTranslation_manager_chinese()%></td>
-									</tr>
+													for (int i = startPage; i <= endPage; i++) {
+														if (i == currentPage) {//페이지번호와 현재 페이지 번호일치
+											%>
+											<li class="active"><a href="#"><%=i%> <span
+													class="sr-only">(current)</span></a></li>
+											<%
+												} else {//페이지번호와 현재 페이지 번호 불일치
+											%>
+											<li><a href="admin_translation.jsp?pageNum=<%=i%>"><%=i%>
+													<span class="sr-only">(current)</span></a></li>
+											<%
+												}
+													}
+													if (endPage < pageCount) {
+											%>
+											<li><a
+												href="admin_translation.jsp?pageNum=<%=startPage + pageBlock%>"
+												aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+											</a></li>
+										</ul>
+									</nav>
 									<%
 										}
 
-											}
+										} catch (Exception e) {
+
+											session.removeAttribute("keyW");
+											session.removeAttribute("keyF");
+											session.removeAttribute("sort2");
+											response.getWriter().print("<script>alert('검색결과가 없습니다.')</script>");
+											response.getWriter().print("<script>location.href='admin_translation.jsp'</script>");
 									%>
-								</tbody>
-							</table>
+
+
+
+
+
+
+
+									<script>
+										alert("검색 결과가 없습니다.");
+									</script>
+									<%
+										}
+									%>
+								</div>
+							</nav>
 						</div>
 					</div>
-					<div class="col-md-12">
-						<nav>
-							<div class="yoho">
-								<%
-									//한 화면에 몇 개의 페이지 번호가 보여지는지 지정
-										int pageBlock = 5;
-										//총 페이지 수
-										int pageCount = (count - 1) / pageSize + 1;
-										int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
-										int endPage = startPage + pageBlock - 1;
-										if (endPage > pageCount)
-											endPage = pageCount;
-								%>
-								<nav>
-									<ul class="pagination">
-										<%
-											if (startPage > pageBlock) {
-										%>
-										<li><a
-											href="admin_translation.jsp?pageNum=<%=startPage - 1%>"
-											aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-										</a></li>
-										<%
-											} else {
-										%>
-										<li class="disabled"><a href="#" aria-label="Previous">
-												<span aria-hidden="true">&laquo;</span>
-										</a></li>
-										<%
-											}
-
-												for (int i = startPage; i <= endPage; i++) {
-													if (i == currentPage) {//페이지번호와 현재 페이지 번호일치
-										%>
-										<li class="active"><a href="#"><%=i%> <span
-												class="sr-only">(current)</span></a></li>
-										<%
-											} else {//페이지번호와 현재 페이지 번호 불일치
-										%>
-										<li><a href="admin_translation.jsp?pageNum=<%=i%>"><%=i%>
-												<span class="sr-only">(current)</span></a></li>
-										<%
-											}
-												}
-												if (endPage < pageCount) {
-										%>
-										<li><a
-											href="admin_translation.jsp?pageNum=<%=startPage + pageBlock%>"
-											aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-										</a></li>
-									</ul>
-								</nav>
-								<%
-									}
-									} catch (IOException e) {
-										e.printStackTrace();
-								%>
-								<script type="text/javascript">
-									alert("검색 결과가 없습니다.");
-									location.href("admin_translation.jsp");
-								</script>
-								<%
-									} catch (Exception e) {
-										e.printStackTrace();
-								%>
-								<script>
-									alert("검색 결과가 없습니다.");
-									location.href("admin_translation.jsp");
-								</script>
-								<%
-									}
-								%>
-							</div>
-						</nav>
-					</div>
-
 					<%@ include file="/include/footer.jsp"%>
 				</div>
 			</div>

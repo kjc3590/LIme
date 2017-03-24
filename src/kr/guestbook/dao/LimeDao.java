@@ -884,11 +884,11 @@ public class LimeDao {
 			String keyField = lime.getKeyField();
 			String keyWord = lime.getKeyWord();
 			String sort = lime.getSort();
-			
+
 			if(sort ==null){
 				sort = "translation_id";
 			}
-			
+
 			try{
 				//커넥션풀로부터 커넥션을 반환
 				conn = getConnection();
@@ -898,7 +898,7 @@ public class LimeDao {
 							+ "WHERE "+keyField.trim()+" LIKE '%"+keyWord.trim()+"%' ORDER BY "+sort+" desc LIMIT ?,? ";
 				}else{
 					sql = "select  * FROM LIME_TRANSLATION "
-							+ " where  translation_id  order by "+sort+" desc limit ?,? ";
+							+ " order by "+sort+" desc limit ?,? ";
 				}
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, pageN);
@@ -907,10 +907,10 @@ public class LimeDao {
 				//SQL문 반영해서 결과행을 ResultSet 담음
 				rs = pstmt.executeQuery();
 				list = new ArrayList<Lime>();
-				
+
 				while(rs.next()){
 					Lime resvList = new Lime();
-					
+
 					int translation_id = rs.getInt("translation_id");
 					String translation_korean = rs.getString("translation_korean");
 					String translation_manager_korean = rs.getString("translation_manager_korean");
@@ -921,8 +921,8 @@ public class LimeDao {
 					String translation_day = rs.getString("translation_day");
 					String translation_cday = rs.getString("translation_cday");
 					String translation_type = rs.getString("translation_type");
-					
-					
+
+
 					resvList.setTranslation_id(translation_id);
 					resvList.setTranslation_korean(translation_korean);
 					resvList.setTranslation_manager_korean(translation_manager_korean);
@@ -933,11 +933,12 @@ public class LimeDao {
 					resvList.setTranslation_day(translation_day);
 					resvList.setTranslation_cday(translation_cday);
 					resvList.setTranslation_type(translation_type);
-					
+
+
 					list.add(resvList);
 				}
-				
-				
+
+
 			}catch(Exception e){
 				throw new Exception(e);
 			}finally{
@@ -945,8 +946,8 @@ public class LimeDao {
 			}
 			return list;
 		}
-	
-		
+
+
 		//예약 총 갯수 (페이지네이션 시 사용)
 		public int getCount_translation(Lime lime)throws Exception{
 			Connection conn = null;
@@ -956,7 +957,7 @@ public class LimeDao {
 			String sql = "";
 			String keyField = lime.getKeyField();
 			String keyWord = lime.getKeyWord();
-			
+
 			try{
 
 				//커넥션풀로부터 커넥션 객체 반환
@@ -980,6 +981,128 @@ public class LimeDao {
 				executeClose(rs, pstmt, conn);
 			}
 			return count;
+		}
+
+
+
+		//회원가입
+		public void Translation_insert(Lime lime) throws Exception{
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			String sql = "";
+			int cnt=1;
+			try{
+				//커넥션풀로부터 커넥션을 할당
+				conn = getConnection();
+
+				sql = "insert into Lime_translation (translation_korean,translation_manager_korean,translation_day) values (?,?,date_format(now(),?))";
+				//PreparedStatement 객체 생성
+				pstmt = conn.prepareStatement(sql);
+
+				//?에 데이터 매칭
+				pstmt.setString(cnt++, lime.getTranslation_korean());
+				System.out.println("dao :" +lime.getTranslation_korean());
+				pstmt.setString(cnt++, lime.getTranslation_manager_korean());
+				System.out.println("dao :" +lime.getTranslation_manager_korean());
+
+				pstmt.setString(cnt++, "%Y-%m-%d %H:%i");
+				pstmt.executeUpdate();
+				//SQL문 반영
+
+			}catch(Exception e){
+				throw new Exception(e);
+			}finally{
+				executeClose(null, pstmt, conn);
+			}
+		}
+
+
+
+
+		public void Translation_update(Lime lime) throws Exception{
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			String sql = "";
+			int cnt=1;
+
+			try{
+
+				//커넥션풀로부터 커넥션을 할당
+				conn = getConnection();
+				if(!lime.getTranslation_chinese().isEmpty()&&!lime.getTranslation_english().isEmpty()){
+					sql = "update Lime_translation set translation_chinese=?,translation_manager_chinese=?, translation_english=? ,translation_manager_english=?,translation_cday = date_format(now(),?) ,translation_type=? where translation_id = ? " ;
+					pstmt = conn.prepareStatement(sql);
+					//PreparedStatement 객체 생성
+					//?에 데이터 매칭
+					pstmt.setString(cnt++, lime.getTranslation_chinese());
+					System.out.println("dao C :"+lime.getTranslation_manager_chinese());
+					pstmt.setString(cnt++, lime.getTranslation_manager_chinese());
+					pstmt.setString(cnt++, lime.getTranslation_english());
+					System.out.println("dao E :"+lime.getTranslation_manager_english());
+					pstmt.setString(cnt++, lime.getTranslation_manager_english());
+					pstmt.setString(cnt++, "%Y-%m-%d %H:%i");
+					pstmt.setString(cnt++, "0");
+					pstmt.setInt(cnt++, lime.getTranslation_id());
+					//SQL문 반영
+				}else{
+					sql = "update Lime_translation set translation_chinese=?,translation_manager_chinese=?, translation_english=? ,translation_manager_english=? where translation_id = ? " ;
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(cnt++, lime.getTranslation_chinese());
+					pstmt.setString(cnt++, lime.getTranslation_manager_chinese());
+					pstmt.setString(cnt++, lime.getTranslation_english());
+					pstmt.setString(cnt++, lime.getTranslation_manager_english());
+					pstmt.setInt(cnt++, lime.getTranslation_id());
+				}
+				pstmt.executeUpdate();
+
+			}catch(Exception e){
+				throw new Exception(e);
+			}finally{
+				executeClose(null, pstmt, conn);
+			}
+		}
+
+
+
+
+		public Lime translate_ago(int translation_id)
+				throws Exception{
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			Lime lime = new Lime();
+			String sql = "";
+
+			try{
+				//커넥션풀로부터 커넥션을 반환
+				conn = getConnection();
+				//SQL문 작성
+				sql = "select translation_chinese,translation_english FROM LIME_TRANSLATION "
+						+ " where translation_id = ? ";
+
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1,translation_id);
+
+				//PreparedStatement 객체 생성
+				//SQL문 반영해서 결과행을 ResultSet 담음
+				rs = pstmt.executeQuery();
+
+				while(rs.next()){
+
+					String translation_chinese = rs.getString("translation_chinese");
+					String translation_english = rs.getString("translation_english");
+
+					lime.setTranslation_chinese(translation_chinese);
+					lime.setTranslation_english(translation_english);
+				}
+
+
+			}catch(Exception e){
+				throw new Exception(e);
+			}finally{
+				executeClose(rs, pstmt, conn);
+			}
+			return lime;
 		}
 		
 }
