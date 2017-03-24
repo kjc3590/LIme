@@ -596,7 +596,7 @@ public class LimeDao {
 			return list;
 		}*/
 		
-/*		// Join CompanyName
+		// Join CompanyName
 		public String CompanyName(int question_id)
 				throws Exception{
 			Connection conn = null;
@@ -629,7 +629,7 @@ public class LimeDao {
 			}
 			return CompanyName;
 		}
-*/		
+		
 		// Join Division
 		public Lime Division(int question_id)
 				throws Exception{
@@ -770,29 +770,59 @@ public class LimeDao {
 			try{
 				
 				String priority = lime.getReply_priority();
+				//커넥션풀로부터 커넥션을 할당
+				conn = getConnection();
+				String progress = lime.getQuestion_progress();
+				String progress_ago = lime.getprogress_ago();
+				
 				if (priority.isEmpty()){
 					priority = "보통";
 				}
-				//커넥션풀로부터 커넥션을 할당
-				conn = getConnection();
 				
+				if(progress_ago.isEmpty() && progress.equals("작업완료")){
+					sql = "update lime_reply a , lime_question b set a.member_id =? , a.member_name = ?, a.reply_day = date_format(now(),?) , a.reply_comday = date_format(now(),?) , " +
+							" a.detailDivision =?  , a.reply_keyword = ? ,a.reply_priority = ?, a.reply_method=? , a.reply_term= ?, a.reply_content = ? , b.question_progress = ? , b.question_division = ? , b.question_manager = ? " +
+							" where a.question_id = b.question_id and a.reply_id = ?  ";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(cnt++, lime.getMember_id());
+					pstmt.setString(cnt++, lime.getMember_name());
+					pstmt.setString(cnt++, "%Y-%m-%d %H:%i");
+					pstmt.setString(cnt++, "%Y-%m-%d %H:%i");
+				}else if(progress_ago.isEmpty()){
 				sql = "update lime_reply a , lime_question b set a.member_id =? , a.member_name = ?, a.reply_day = date_format(now(),?) , " +
 						 " a.detailDivision =?  , a.reply_keyword = ? ,a.reply_priority = ?, a.reply_method=? , a.reply_term= ?, a.reply_content = ? , b.question_progress = ? , b.question_division = ? , b.question_manager = ? " +
 						 " where a.question_id = b.question_id and a.reply_id = ?  ";
-				//PreparedStatement 객체 생성
 				pstmt = conn.prepareStatement(sql);
-				
-				//?에 데이터 매칭
 				pstmt.setString(cnt++, lime.getMember_id());
 				pstmt.setString(cnt++, lime.getMember_name());
 				pstmt.setString(cnt++, "%Y-%m-%d %H:%i");
+				}else if(progress.equals("작업완료")){
+					sql = "update lime_reply a , lime_question b set a.member_id =? , a.member_name = ?, a.reply_comday = date_format(now(),?) , " +
+							" a.detailDivision =?  , a.reply_keyword = ? ,a.reply_priority = ?, a.reply_method=? , a.reply_term= ?, a.reply_content = ? , b.question_progress = ? , b.question_division = ? , b.question_manager = ? " +
+							" where a.question_id = b.question_id and a.reply_id = ?  ";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(cnt++, lime.getMember_id());
+					pstmt.setString(cnt++, lime.getMember_name());
+					pstmt.setString(cnt++, "%Y-%m-%d %H:%i");
+				}else{
+					sql = "update lime_reply a , lime_question b set a.member_id =? , a.member_name = ?,  " +
+							" a.detailDivision =?  , a.reply_keyword = ? ,a.reply_priority = ?, a.reply_method=? , a.reply_term= ?, a.reply_content = ? , b.question_progress = ? , b.question_division = ? , b.question_manager = ? " +
+							" where a.question_id = b.question_id and a.reply_id = ?  ";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(cnt++, lime.getMember_id());
+					pstmt.setString(cnt++, lime.getMember_name());
+				}
+			
+				//PreparedStatement 객체 생성
+				
+				//?에 데이터 매칭
 				pstmt.setString(cnt++, lime.getDetailDivision());
 				pstmt.setString(cnt++, lime.getReply_keyword());
 				pstmt.setString(cnt++, priority);
 				pstmt.setString(cnt++, lime.getReply_method());
 				pstmt.setString(cnt++, lime.getReply_term());
 				pstmt.setString(cnt++, lime.getReply_content());
-				pstmt.setString(cnt++, lime.getQuestion_progress());
+				pstmt.setString(cnt++, progress);
 				pstmt.setString(cnt++, lime.getQuestion_division());
 				pstmt.setString(cnt++, lime.getQuestion_manager());
 				pstmt.setInt(cnt++, lime.getReply_id());

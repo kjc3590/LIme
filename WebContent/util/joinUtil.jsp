@@ -38,14 +38,14 @@
 		dao.Lime_join(lime);
 		%>
 			<script>
-				alert("성공");
+				alert("회원가입 완료");
 				location.href="../index.jsp";
 			</script>		
 		<%
 	}catch(Exception e){
 	%>
 		<script>
-			alert("실패");
+			alert("회원가입 실패");
 			history.go(-1);
 		</script>		
 	<%

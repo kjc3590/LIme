@@ -20,7 +20,6 @@
 <link href="vendors/material-icons/material-design-iconic-font.min.css" rel="stylesheet">
 <script src="assets/js/jquery-3.1.1.min.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
-
 <script>
 	function searchCheck(frm){
         //검색
@@ -67,7 +66,6 @@
 	}else{
 		keyField = null;
 		lime.setKeyField(keyF);
-
 	}
 	
 	// keyword session 

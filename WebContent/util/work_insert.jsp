@@ -24,6 +24,7 @@
 		String reply_term = request.getParameter("term");
 		String reply_day = request.getParameter("reply_day");
 		String reply_content = request.getParameter("reply_content");
+		String progress_ago = request.getParameter("progress_ago");
 		
 		System.out.println("------------------------------------------------");
 		
@@ -45,6 +46,7 @@
 		lime.setReply_term(reply_term);
 		lime.setReply_day(reply_day);
 		lime.setReply_content(reply_content);	
+		lime.setprogress_ago(progress_ago);
 		
 		dao.work_update(lime);
 %>

@@ -226,8 +226,7 @@
 										<div class="form-group">
 											<div class="fg-line">
 												<textarea class="leftm form-control" rows="8" name="content"
-													placeholder="<%=lime.getQuestion_content()%>"
-													readonly="readonly"></textarea>
+													readonly="readonly"><%=lime.getQuestion_content()%></textarea>
 											</div>
 										</div>
 									</div>
@@ -438,7 +437,7 @@
 														<%="회신요청".equals(question_progress) ? "selected" : ""%>>회신요청</option>
 													<option value="개발중"
 														<%="개발중".equals(question_progress) ? "selected" : ""%>>개발중</option>
-													<option value="답변완료"
+													<option value="작업완료"
 														<%="작업완료".equals(question_progress) ? "selected" : ""%>>작업완료</option>
 													<option value="작업보류"
 														<%="작업보류".equals(question_progress) ? "selected" : ""%>>작업보류</option>
@@ -504,16 +503,15 @@
 										<div class="form-group">
 											<div class="fg-line">
 												<textarea class="leftm form-control" rows="8"
-													placeholder="<%=lime.getReply_content()%>"
-													name="reply_content"></textarea>
+													name="reply_content"><%=lime.getReply_content()%></textarea>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 
-							<input type="hidden" value="<%=lime.getReply_id() %>"
-								name="reply_id">
+							<input type="hidden" value="<%=lime.getReply_id() %>" name="reply_id">
+							<input type="hidden" value="<%=question_progress %>" name="progress_ago">
 
 							<div class="col-md-12">
 								<div class="col-md-10"></div>
@@ -533,14 +531,15 @@
 						%>
 										</div>
 									</div>
+									
 									<div class="col-md-6">
 										<div class="form-group">
-											<input type="button" value="취소" class="btn btn-two m-r-10">
-
-
+											<a href="admin_list.jsp"> 
+												<input class="btn btn-two m-r-10" value="취소" type="button">
+											</a>
 										</div>
 									</div>
-
+									
 								</div>
 							</div>
 							<%

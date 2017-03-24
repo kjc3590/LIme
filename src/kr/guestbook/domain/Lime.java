@@ -30,6 +30,7 @@ public class Lime {
 	private String reply_term;
 	private String reply_content;
 	private String detailDivision;
+	private String progress_ago;
 	
 	private String KeyWord;
 	private String KeyField;
@@ -329,6 +330,14 @@ public class Lime {
 
 	public void setTranslation_type(String translation_type) {
 		this.translation_type = translation_type;
+	}
+
+	public String getprogress_ago() {
+		return progress_ago;
+	}
+
+	public void setprogress_ago(String progress_ago) {
+		this.progress_ago = progress_ago;
 	}
 
 	
